@@ -8,7 +8,9 @@ import {
   bigIntToUINT8Array
 } from '../utils';
 import { Bytes, IHash, Siblings } from '../../types';
-import { Hex, poseidon } from '@iden3/js-crypto';
+import { Hex } from '@iden3/js-crypto';
+import { keccak256 } from '@ethersproject/keccak256';
+import { AbiCoder } from '@ethersproject/abi';
 
 export class Hash implements IHash {
   // little endian
@@ -57,18 +59,16 @@ export class Hash implements IHash {
 
   static fromString(s: string): Hash {
     try {
-      return Hash.fromBigInt(BigInt(s));
+      const bigIntValue = BigInt(s);
+      return Hash.fromBigInt(bigIntValue);
     } catch (e) {
+      console.log(e);
       const deserializedHash = JSON.parse(s);
       const bytes = Uint8Array.from(Object.values(deserializedHash.bytes));
       return new Hash(bytes);
     }
   }
   static fromBigInt(i: bigint): Hash {
-    if (!checkBigIntInField(i)) {
-      throw new Error('NewBigIntFromHashBytes: Value not inside the Finite Field');
-    }
-
     const bytes = bigIntToUINT8Array(i);
 
     return new Hash(swapEndianness(bytes));
@@ -113,13 +113,13 @@ export const newHashFromString = (decimalString: string): Hash => {
 };
 
 export const hashElems = (e: Array<bigint>): Hash => {
-  const hashBigInt = poseidon.hash(e);
-  return Hash.fromBigInt(hashBigInt);
+  const hashBigInt = keccak256(new AbiCoder().encode(['uint256[]'], [e]));
+  return Hash.fromString(hashBigInt);
 };
 
 export const hashElemsKey = (k: bigint, e: Array<bigint>): Hash => {
-  const hashBigInt = poseidon.hash([...e, k]);
-  return Hash.fromBigInt(hashBigInt);
+  const hashBigInt = keccak256(new AbiCoder().encode(['uint256[]'], [[...e, k]]));
+  return Hash.fromString(hashBigInt);
 };
 
 export const circomSiblingsFromSiblings = (siblings: Siblings, levels: number): Siblings => {
