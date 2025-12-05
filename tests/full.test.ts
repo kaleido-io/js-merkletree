@@ -64,36 +64,36 @@ for (let index = 0; index < storages.length; index++) {
       expect((val as NodeMiddle).childR.hex()).toEqual(v.hex());
     });
 
-    it.only('test new merkle tree', async () => {
+    it('test new merkle tree', async () => {
       const sto = getTreeStorage();
       const mt = new Merkletree(sto, true, 10);
       expect((await mt.root()).string()).toEqual('0');
 
-      await mt.add(BigInt('4'), BigInt('444'));
+      await mt.add(BigInt('1'), BigInt('2'));
       expect((await mt.root()).bigInt().toString(10)).toEqual(
         '13578938674299138072471463694055224830892726234048532520316387704878000008795'
       );
 
-      // await mt.add(BigInt('33'), BigInt('44'));
-      // expect((await mt.root()).bigInt().toString(10)).toEqual(
-      //   '5412393676474193513566895793055462193090331607895808993925969873307089394741'
-      // );
+      await mt.add(BigInt('33'), BigInt('44'));
+      expect((await mt.root()).bigInt().toString(10)).toEqual(
+        '5412393676474193513566895793055462193090331607895808993925969873307089394741'
+      );
 
-      // await mt.add(BigInt('1234'), BigInt('9876'));
-      // expect((await mt.root()).bigInt().toString(10)).toEqual(
-      //   '14204494359367183802864593755198662203838502594566452929175967972147978322084'
-      // );
+      await mt.add(BigInt('1234'), BigInt('9876'));
+      expect((await mt.root()).bigInt().toString(10)).toEqual(
+        '14204494359367183802864593755198662203838502594566452929175967972147978322084'
+      );
 
-      // expect((await sto.getRoot()).bigInt().toString()).toEqual(
-      //   (await mt.root()).bigInt().toString()
-      // );
+      expect((await sto.getRoot()).bigInt().toString()).toEqual(
+        (await mt.root()).bigInt().toString()
+      );
 
-      // const { proof, value } = await mt.generateProof(BigInt('33'));
-      // expect(value.toString()).toEqual('44');
+      const { proof, value } = await mt.generateProof(BigInt('33'));
+      expect(value.toString()).toEqual('44');
 
-      // expect(await verifyProof(await mt.root(), proof, BigInt('33'), BigInt('44'))).toEqual(true);
+      expect(await verifyProof(await mt.root(), proof, BigInt('33'), BigInt('44'))).toEqual(true);
 
-      // expect(await verifyProof(await mt.root(), proof, BigInt('33'), BigInt('45'))).toEqual(false);
+      expect(await verifyProof(await mt.root(), proof, BigInt('33'), BigInt('45'))).toEqual(false);
     });
 
     it('test tree with one node', async () => {
