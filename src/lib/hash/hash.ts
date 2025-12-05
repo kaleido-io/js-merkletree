@@ -113,14 +113,14 @@ export const newHashFromString = (decimalString: string): Hash => {
 };
 
 export const hashElems = (e: Array<bigint>): Hash => {
-  const hashBigInt = keccak256(new AbiCoder().encode(['uint256[]'], [e]));
-  console.log('hashElems', e, hashBigInt);
+  const hashBigInt = keccak256(new AbiCoder().encode(e.map(p => 'uint256'), e));
   return Hash.fromString(hashBigInt);
 };
 
 export const hashElemsKey = (k: bigint, e: Array<bigint>): Hash => {
-  const hashBigInt = keccak256(new AbiCoder().encode(['uint256[]'], [[...e, k]]));
-  console.log('hashElemsKey', k, e, hashBigInt);
+  const params = [...e, k];
+  const encoded = new AbiCoder().encode(params.map(p => 'uint256'), [...e, k]);
+  const hashBigInt = keccak256(encoded);
   return Hash.fromString(hashBigInt);
 };
 
