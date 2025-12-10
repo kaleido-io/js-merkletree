@@ -73,4 +73,7 @@ export class IndexedDBStorage implements ITreeStorage {
     await set(this._prefixHash, r, this._store);
     this._currentRoot = r;
   }
+  getHashAlgorithm(): HashAlgorithm {
+    return this._algo;
+  }
 }

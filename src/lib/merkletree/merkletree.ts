@@ -26,11 +26,11 @@ export class Merkletree {
   private _maxLevel: number;
   private _algo: HashAlgorithm;
 
-  constructor(_db: ITreeStorage, _writable: boolean, _maxLevels: number, algo?: HashAlgorithm) {
+  constructor(_db: ITreeStorage, _writable: boolean, _maxLevels: number) {
     this._db = _db;
     this._writable = _writable;
     this._maxLevel = _maxLevels;
-    this._algo = algo ?? HashAlgorithm.Poseidon;
+    this._algo = _db.getHashAlgorithm();
   }
 
   async root(): Promise<Hash> {
