@@ -75,4 +75,7 @@ export class LocalStorageDB implements ITreeStorage {
     this._currentRoot = r;
     localStorage.setItem(bytes2Hex(this._prefix), JSON.stringify(Array.from(r.bytes)));
   }
+  getHashAlgorithm(): HashAlgorithm {
+    return this._algo;
+  }
 }

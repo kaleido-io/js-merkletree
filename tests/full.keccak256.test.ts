@@ -42,7 +42,7 @@ for (let index = 0; index < storages.length; index++) {
       } else if (storages[index] == TreeStorageType.IndexedDB) {
         return new IndexedDBStorage(str2Bytes(prefix), HashAlgorithm.Keccak256);
       } else if (storages[index] == TreeStorageType.InMemoryDB) {
-        return new InMemoryDB(str2Bytes(prefix));
+        return new InMemoryDB(str2Bytes(prefix), HashAlgorithm.Keccak256);
       }
       throw new Error('error: unknown storage type');
     };
@@ -66,7 +66,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test new merkle tree', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
       expect((await mt.root()).string()).toEqual('0');
 
       await mt.add(BigInt('1'), BigInt('2'));
@@ -98,7 +98,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test tree with one node', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
       expect(bytesEqual((await mt.root()).value, ZERO_HASH.value)).toEqual(true);
 
       await mt.add(BigInt('100'), BigInt('200'));
@@ -112,8 +112,8 @@ for (let index = 0; index < storages.length; index++) {
     it('test add and different order', async () => {
       const sto1 = getTreeStorage('tree1');
       const sto2 = getTreeStorage('tree2');
-      const mt1 = new Merkletree(sto1, true, 140, HashAlgorithm.Keccak256);
-      const mt2 = new Merkletree(sto2, true, 140, HashAlgorithm.Keccak256);
+      const mt1 = new Merkletree(sto1, true, 140);
+      const mt2 = new Merkletree(sto2, true, 140);
 
       for (let i = 0; i < 16; i += 1) {
         const k = BigInt(i);
@@ -135,7 +135,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test add repeated index', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 140, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 140);
 
       const k = BigInt('3');
       const v = BigInt('12');
@@ -150,7 +150,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test get', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 140, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 140);
 
       for (let i = 0; i < 16; i += 1) {
         const k = BigInt(i);
@@ -175,7 +175,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test update', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 140, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 140);
 
       for (let i = 0; i < 16; i += 1) {
         const k = BigInt(i);
@@ -201,8 +201,8 @@ for (let index = 0; index < storages.length; index++) {
     it('test update 2', async () => {
       const sto1 = getTreeStorage('tree1');
       const sto2 = getTreeStorage('tree2');
-      const mt1 = new Merkletree(sto1, true, 140, HashAlgorithm.Keccak256);
-      const mt2 = new Merkletree(sto2, true, 140, HashAlgorithm.Keccak256);
+      const mt1 = new Merkletree(sto1, true, 140);
+      const mt2 = new Merkletree(sto2, true, 140);
 
       await mt1.add(BigInt('1'), BigInt('2'));
       await mt1.add(BigInt('2'), BigInt('229'));
@@ -221,7 +221,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test generate and verify proof 128', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 140, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 140);
 
       for (let i = 0; i < 128; i += 1) {
         const k = BigInt(i);
@@ -238,7 +238,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test tree limit', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 5, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 5);
 
       for (let i = 0; i < 16; i += 1) {
         await mt.add(BigInt(i), BigInt(i));
@@ -253,7 +253,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test siblings from proof', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 140, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 140);
 
       for (let i = 0; i < 64; i += 1) {
         const k = BigInt(i);
@@ -288,7 +288,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test and verify proof cases', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 140, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 140);
 
       for (let i = 0; i < 8; i += 1) {
         await mt.add(BigInt(i), BigInt('0'));
@@ -327,7 +327,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test and verify proof false', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 140, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 140);
 
       for (let i = 0; i < 8; i += 1) {
         await mt.add(BigInt(i), BigInt('0'));
@@ -352,7 +352,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test delete', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       await mt.add(BigInt('1'), BigInt('2'));
       expect((await mt.root()).string()).toEqual(
@@ -384,8 +384,8 @@ for (let index = 0; index < storages.length; index++) {
     it('test delete 2', async () => {
       const sto1 = getTreeStorage('tree1');
       const sto2 = getTreeStorage('tree2');
-      const mt1 = new Merkletree(sto1, true, 140, HashAlgorithm.Keccak256);
-      const mt2 = new Merkletree(sto2, true, 140, HashAlgorithm.Keccak256);
+      const mt1 = new Merkletree(sto1, true, 140);
+      const mt2 = new Merkletree(sto2, true, 140);
 
       for (let i = 0; i < 8; i += 1) {
         const k = BigInt(i);
@@ -415,8 +415,8 @@ for (let index = 0; index < storages.length; index++) {
     it('test delete 3', async () => {
       const sto1 = getTreeStorage('tree1');
       const sto2 = getTreeStorage('tree2');
-      const mt1 = new Merkletree(sto1, true, 140, HashAlgorithm.Keccak256);
-      const mt2 = new Merkletree(sto2, true, 140, HashAlgorithm.Keccak256);
+      const mt1 = new Merkletree(sto1, true, 140);
+      const mt2 = new Merkletree(sto2, true, 140);
 
       await mt1.add(BigInt('1'), BigInt('1'));
       await mt1.add(BigInt('2'), BigInt('2'));
@@ -438,8 +438,8 @@ for (let index = 0; index < storages.length; index++) {
     it('test delete 4', async () => {
       const sto1 = getTreeStorage('tree1');
       const sto2 = getTreeStorage('tree2');
-      const mt1 = new Merkletree(sto1, true, 140, HashAlgorithm.Keccak256);
-      const mt2 = new Merkletree(sto2, true, 140, HashAlgorithm.Keccak256);
+      const mt1 = new Merkletree(sto1, true, 140);
+      const mt2 = new Merkletree(sto2, true, 140);
 
       await mt1.add(BigInt('1'), BigInt('1'));
       await mt1.add(BigInt('2'), BigInt('2'));
@@ -463,8 +463,8 @@ for (let index = 0; index < storages.length; index++) {
     it('test delete 5', async () => {
       const sto1 = getTreeStorage('tree1');
       const sto2 = getTreeStorage('tree2');
-      const mt1 = new Merkletree(sto1, true, 140, HashAlgorithm.Keccak256);
-      const mt2 = new Merkletree(sto2, true, 140, HashAlgorithm.Keccak256);
+      const mt1 = new Merkletree(sto1, true, 140);
+      const mt2 = new Merkletree(sto2, true, 140);
 
       await mt1.add(BigInt('1'), BigInt('2'));
       await mt1.add(BigInt('33'), BigInt('44'));
@@ -485,7 +485,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test delete not existing keys', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       await mt.add(BigInt('1'), BigInt('2'));
       await mt.add(BigInt('33'), BigInt('44'));
@@ -510,7 +510,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test delete leaf near middle node. Right branch', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       const keys = [7n, 1n, 5n];
 
@@ -547,7 +547,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test delete leaf near middle node. Right branch deep', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       const keys = [3n, 7n, 15n];
 
@@ -593,7 +593,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test delete leaf near middle node. Left branch', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       const keys = [6n, 4n, 2n];
 
@@ -630,7 +630,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test delete leaf near middle node. Left branch deep', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       const keys = [4n, 8n, 16n];
 
@@ -683,7 +683,7 @@ for (let index = 0; index < storages.length; index++) {
     //	root(11)
     it('test up to root after delete. Right branch', async () => {
       const sto = getTreeStorage('right branch');
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       await mt.add(1n, 1n);
       await mt.add(3n, 3n);
@@ -708,7 +708,7 @@ for (let index = 0; index < storages.length; index++) {
     //	root(100)
     it('test up to root after delete. Left branch', async () => {
       const sto = getTreeStorage('left branch');
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       await mt.add(2n, 2n);
       await mt.add(4n, 4n);
@@ -735,7 +735,7 @@ for (let index = 0; index < storages.length; index++) {
     //	10  11
     it('calculating of new root. Right branch', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       await mt.add(1n, 1n);
       await mt.add(3n, 3n);
@@ -767,7 +767,7 @@ for (let index = 0; index < storages.length; index++) {
     //	100  001
     it('calculating of new root. Left branch', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       await mt.add(1n, 1n);
       await mt.add(2n, 2n);
@@ -787,7 +787,7 @@ for (let index = 0; index < storages.length; index++) {
     // https://github.com/iden3/go-merkletree-sql/issues/23
     it('test insert node after delete', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       await mt.add(1n, 1n);
       await mt.add(5n, 5n);
@@ -811,7 +811,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test insert deleted node then update it. Right branch', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       await mt.add(1n, 1n);
       await mt.add(5n, 5n);
@@ -840,7 +840,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test insert deleted node then update it. Left branch', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       await mt.add(6n, 6n);
       await mt.add(2n, 2n);
@@ -869,7 +869,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test push leaf already exists. Right branch', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       await mt.add(1n, 1n);
       await mt.add(5n, 5n);
@@ -898,7 +898,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test push leaf already exists. Left branch', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       await mt.add(6n, 6n);
       await mt.add(2n, 2n);
@@ -927,7 +927,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test up nodes to two levels. Right branch', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       await mt.add(1n, 1n);
       await mt.add(7n, 7n);
@@ -944,7 +944,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test up nodes to two levels. Left branch', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       await mt.add(2n, 2n);
       await mt.add(8n, 8n);
@@ -962,8 +962,8 @@ for (let index = 0; index < storages.length; index++) {
     it('test dump leafs and import leafs', async () => {
       const sto1 = getTreeStorage('tree1');
       const sto2 = getTreeStorage('tree2');
-      const mt1 = new Merkletree(sto1, true, 140, HashAlgorithm.Keccak256);
-      const mt2 = new Merkletree(sto2, true, 140, HashAlgorithm.Keccak256);
+      const mt1 = new Merkletree(sto1, true, 140);
+      const mt2 = new Merkletree(sto2, true, 140);
 
       for (let i = 0; i < 10; i += 1) {
         let k = MAX_NUM_IN_FIELD - BigInt(i.toString());
@@ -977,7 +977,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test add and get circom proof', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       expect((await mt.root()).string()).toEqual('0');
 
@@ -1040,7 +1040,7 @@ for (let index = 0; index < storages.length; index++) {
 
     it('test update circom processor proof', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 10, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 10);
 
       for (let i = 0; i < 16; i += 1) {
         const k = BigInt(i);
@@ -1084,7 +1084,7 @@ for (let index = 0; index < storages.length; index++) {
       const f = async (node: Node): Promise<void> => {
         return Promise.resolve();
       };
-      const tree = new Merkletree(new InMemoryDB(str2Bytes('')), true, 40, HashAlgorithm.Keccak256);
+      const tree = new Merkletree(new InMemoryDB(str2Bytes(''), HashAlgorithm.Keccak256), true, 40);
 
       for (let i = 0; i < 5; i++) {
         await tree.add(BigInt(i), BigInt(i));
@@ -1094,7 +1094,7 @@ for (let index = 0; index < storages.length; index++) {
     });
 
     it('proof stringify (old format for node aux)', async () => {
-      const tree = new Merkletree(new InMemoryDB(str2Bytes('')), true, 40, HashAlgorithm.Keccak256);
+      const tree = new Merkletree(new InMemoryDB(str2Bytes(''), HashAlgorithm.Keccak256), true, 40);
 
       for (let i = 0; i < 5; i++) {
         await tree.add(BigInt(i), BigInt(i));
@@ -1118,7 +1118,7 @@ for (let index = 0; index < storages.length; index++) {
       expect(JSON.stringify(proof.nodeAux)).toEqual(JSON.stringify(proofFromJSON.nodeAux));
     });
     it('proof stringify (new format for node aux)', async () => {
-      const tree = new Merkletree(new InMemoryDB(str2Bytes('')), true, 40, HashAlgorithm.Keccak256);
+      const tree = new Merkletree(new InMemoryDB(str2Bytes(''), HashAlgorithm.Keccak256), true, 40);
 
       for (let i = 0; i < 5; i++) {
         await tree.add(BigInt(i), BigInt(i));
@@ -1161,7 +1161,7 @@ for (let index = 0; index < storages.length; index++) {
     });
     it('test smt verifier', async () => {
       const sto = getTreeStorage();
-      const mt = new Merkletree(sto, true, 4, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(sto, true, 4);
 
       await mt.add(BigInt('1'), BigInt('11'));
       let cvp = await mt.generateSCVerifierProof(BigInt('1'), ZERO_HASH);
@@ -1205,7 +1205,7 @@ for (let index = 0; index < storages.length; index++) {
     });
     it('calculate depth for mtp', async () => {
       const storage = getTreeStorage('calculatedepth');
-      const mt = new Merkletree(storage, true, 40, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(storage, true, 40);
 
       await mt.add(BigInt('1'), BigInt('2'));
       await mt.add(BigInt('3'), BigInt('8'));
@@ -1228,7 +1228,7 @@ for (let index = 0; index < storages.length; index++) {
     });
     it('calculate depth for mtp (old format)', async () => {
       const storage = getTreeStorage('calculatedepth');
-      const mt = new Merkletree(storage, true, 40, HashAlgorithm.Keccak256);
+      const mt = new Merkletree(storage, true, 40);
 
       await mt.add(BigInt('1'), BigInt('2'));
       await mt.add(BigInt('3'), BigInt('8'));
