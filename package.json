@@ -58,7 +58,7 @@
     "format": "prettier --config .prettierrc './{src,tests}/*.ts' --write",
     "format:check": "prettier --config .prettierrc './{src,tests}/*.ts' --check",
     "deps:check": "madge --warning --circular --extensions ts ./",
-    "postinstall": "npm run build:node && npm run build:types"
+    "postinstall": "npm i && npm run build:node && npm run build:types"
   },
   "devDependencies": {
     "@cspell/eslint-plugin": "^8.14.2",
