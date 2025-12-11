@@ -19,7 +19,8 @@
   "types": "dist/types/index.d.ts",
   "files": [
     "dist",
-    "src"
+    "src",
+    "scripts"
   ],
   "keywords": [
     "js merkletree",
@@ -58,6 +59,7 @@
     "format:check": "prettier --config .prettierrc './{src,tests}/*.ts' --check",
     "deps:check": "madge --warning --circular --extensions ts ./"
   },
+  "postinstall": "npm run build:node && npm run build:types",
   "devDependencies": {
     "@cspell/eslint-plugin": "^8.14.2",
     "@iden3/eslint-config": "https://github.com/iden3/eslint-config",
